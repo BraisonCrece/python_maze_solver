@@ -13,7 +13,10 @@ line2 = Line(point3, point4)
 
 window = Window(800, 600)
 cell = Cell(window, 100, 200, 100, 200, True, False, True, True)
+cell_2 = Cell(window, 200, 300, 100, 200, False, True, True, True)
 cell.draw()
+cell_2.draw()
+cell.draw_move(cell_2)
 
 window.wait_for_close()
 
