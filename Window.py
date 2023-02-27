@@ -26,11 +26,6 @@ class Window:
     def draw_line(self, line, fill_color):
         line.draw(self.canvas, fill_color)
 
-# def main():
-#     win = Window(800, 600)
-#     win.wait_for_close()
-
-# main()
 
 
 

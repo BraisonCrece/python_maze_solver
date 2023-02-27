@@ -2,21 +2,10 @@ from Point import Point
 from Window import Window
 from Line import Line
 from Cell import Cell
-
-point1 = Point(100,400 )
-point2 = Point(150, 500)
-point3 = Point(20, 100)
-point4 = Point(250, 300)
-
-line1 = Line(point1, point2)
-line2 = Line(point3, point4)
+from Maze import Maze
 
 window = Window(800, 600)
-cell = Cell(window, 100, 200, 100, 200, True, False, True, True)
-cell_2 = Cell(window, 200, 300, 100, 200, False, True, True, True)
-cell.draw()
-cell_2.draw()
-cell.draw_move(cell_2)
+maze = Maze(100, 100, 10, 10, window)
 
 window.wait_for_close()
 
