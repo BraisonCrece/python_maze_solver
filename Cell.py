@@ -17,23 +17,32 @@ class Cell:
         self.center_point = Point(center_x, center_y)
 
     def draw(self):
-        top_left_corner = Point(self._x1, self._y1)
-        top_right_corner = Point(self._x2, self._y1)
+        top_left_corner     = Point(self._x1, self._y1)
+        top_right_corner    = Point(self._x2, self._y1)
         bottom_right_corner = Point(self._x2, self._y2)
-        bottom_left_corner = Point(self._x1, self._y2)
+        bottom_left_corner  = Point(self._x1, self._y2)
 
         lines = []
         if self.has_top_wall:
-            lines.append((top_left_corner, top_right_corner))
+            lines.append((top_left_corner, top_right_corner, "black"))
+        else:
+            lines.append((top_left_corner, top_right_corner, "white") )
         if self.has_right_wall:
-            lines.append((top_right_corner, bottom_right_corner))
+            lines.append((top_right_corner, bottom_right_corner, "black"))
+        else:
+            lines.append((top_right_corner, bottom_right_corner, "white"))
         if self.has_bottom_wall:
-            lines.append((bottom_left_corner, bottom_right_corner))
+            lines.append((bottom_left_corner, bottom_right_corner, "black"))
+        else:
+            lines.append((bottom_left_corner, bottom_right_corner, "white"))
         if self.has_left_wall:
-            lines.append((top_left_corner, bottom_left_corner))
+            lines.append((top_left_corner, bottom_left_corner, "black"))
+        else:
+            lines.append((top_left_corner, bottom_left_corner, "white"))
 
         for line in lines:
-            self._window.draw_line(Line(line[0], line[1]), "black")
+            self._window.draw_line(Line(line[0], line[1]),line[2] )
+
 
     def draw_move(self, to_cell, undo=False):
         move_left   = not self.has_left_wall    and not to_cell.has_right_wall
