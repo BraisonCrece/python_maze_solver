@@ -54,83 +54,80 @@ class Maze:
     def _break_walls_r(self, i, j):
         current_cell = self._cells[i][j]
         current_cell.visited = True
+        print(f"current cell: i -> {i}, j -> {j}")
         adjacents = []
-        # if i != 0 and j != 0:
-        #     adjacents.append([i-1,j])
-        #     adjacents.append([i+1,j])
-        #     adjacents.append([i,j-1])
-        #     adjacents.append([i,j+1])
-        # if i == 0:
-        #     adjacents.append([i,j-1])
-        #     adjacents.append([i,j+1])
-        #     adjacents.append([i+1,j])
-        # if j == 0:
-        #     adjacents.append([i,j+1])
-        #     adjacents.append([i-1,j])
-        #     adjacents.append([i+1,j])
-        if i > 0:
+        if i == 0:
+            if j == 0:
+                adjacents.append([i,j+1])
+                adjacents.append([i+1,j])
+            if j == self.num_cols -1:
+                adjacents.append([i,j-1])
+                adjacents.append([i+1,j])
+        elif i == self.num_rows -1:
+            if j == 0:
+                adjacents.append([i+1,j])
+                adjacents.append([i,j+1])
+            if j == self.num_cols -1:
+                adjacents.append([i-1,j])
+                adjacents.append([i,j-1])
+        elif j == 0:
             adjacents.append([i-1,j])
-        if i < len(self._cells) - 1:
-            adjacents.append([i+1,j])
-        if j > 0:
-            adjacents.append([i,j-1])
-        if j < len(self._cells[0]) - 1:
             adjacents.append([i,j+1])
+            adjacents.append([i+1,j])
+        elif j == self.num_cols -1:
+            adjacents.append([i-1, j])
+            adjacents.append([i, j-1])
+            adjacents.append([i+1, j])
+        elif i != 0 and i != self.num_rows -1 and j != 0 and j != self.num_cols-1:
+            adjacents.append([i,j-1])
+            adjacents.append([i,j+1])
+            adjacents.append([i+1,j])
+            adjacents.append([i-1,j])
+
+        print(f"adjacents -> {adjacents}")
 
         move_options = []
         for cell in adjacents:
             if self._cells[cell[0]][cell[1]].visited == False:
                 move_options.append(cell)
-
-        cell_to_move = move_options[random.randint(0,len(move_options)-1)]
-
-        # move horizontally
-        if i == cell_to_move[0]:
-            # move right
-            if j > cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_right_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_left_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-            # move left
-            if j < cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_left_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_right_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-        # move vertically
-        if j == cell_to_move[0]:
-            # move bottom
-            if i > cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_bottom_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_top_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-            # move top
-            if i < cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_top_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_bottom_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-
-        if len(cell_to_move) == 0:
+        #############################
+        # Take a look at this point #
+        #############################
+        if len(move_options) == 1:
+            cell_to_move = move_options[0]
+        elif len(move_options) == 0:
+            print("returned")
             return
+        else:
+            cell_to_move = move_options[random.randint(0,len(move_options)-1)]
 
+        print(f"move options -> {move_options}")
+        print(f"cell to move -> {cell_to_move}")
+
+        # move to left
+        if i == cell_to_move[0] and j > cell_to_move[1]:
+            self._cells[i][j].has_left_wall = False
+            self._cells[cell_to_move[0]][cell_to_move[1]].has_right_wall = False
+        # move right
+        elif i == cell_to_move[0] and j < cell_to_move[1]:
+            self._cells[i][j].has_right_wall = False
+            self._cells[cell_to_move[0]][cell_to_move[1]].has_left_wall = False
+        # move down
+        elif i < cell_to_move[0] and j == cell_to_move[1]:
+            self._cells[i][j].has_bottom_wall = False
+            self._cells[cell_to_move[0]][cell_to_move[1]].has_top_wall = False
+        # move up
+        elif i > cell_to_move[0] and j == cell_to_move[1]:
+            self._cells[i][j].has_top_wall = False
+            self._cells[cell_to_move[0]][cell_to_move[1]].has_bottom_wall = False
+
+        self._draw_cell(self._cells[i][j])
+        self._draw_cell(self._cells[cell_to_move[0]][cell_to_move[1]])
+        self._cells[i][j].draw_move(self._cells[cell_to_move[0]][cell_to_move[1]])
+
+        #################################################
+        # Then continue trying to do recursiveness work #
+        #################################################
+        self._break_walls_r(cell_to_move[0], cell_to_move[1])
 
 
