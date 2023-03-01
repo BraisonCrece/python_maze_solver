@@ -5,7 +5,7 @@ from Cell import Cell
 from Maze import Maze
 
 window = Window(800, 600)
-maze = Maze(100, 100, 4, 6, window)
+maze = Maze(100, 100, 14, 20, window)
 
 window.wait_for_close()
 

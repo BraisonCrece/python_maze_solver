@@ -52,85 +52,49 @@ class Maze:
         self._break_walls_r(0,0)
 
     def _break_walls_r(self, i, j):
-        current_cell = self._cells[i][j]
-        current_cell.visited = True
-        adjacents = []
-        # if i != 0 and j != 0:
-        #     adjacents.append([i-1,j])
-        #     adjacents.append([i+1,j])
-        #     adjacents.append([i,j-1])
-        #     adjacents.append([i,j+1])
-        # if i == 0:
-        #     adjacents.append([i,j-1])
-        #     adjacents.append([i,j+1])
-        #     adjacents.append([i+1,j])
-        # if j == 0:
-        #     adjacents.append([i,j+1])
-        #     adjacents.append([i-1,j])
-        #     adjacents.append([i+1,j])
-        if i > 0:
-            adjacents.append([i-1,j])
-        if i < len(self._cells) - 1:
-            adjacents.append([i+1,j])
-        if j > 0:
-            adjacents.append([i,j-1])
-        if j < len(self._cells[0]) - 1:
-            adjacents.append([i,j+1])
+        cell = self._cells[i][j]
+        cell.visited = True
+        neighbors = self._get_unvisited_neighbors(i, j)
 
-        move_options = []
-        for cell in adjacents:
-            if self._cells[cell[0]][cell[1]].visited == False:
-                move_options.append(cell)
+        while len(neighbors) > 0:
+            random_idx = random.randint(0, len(neighbors) - 1)
+            neighbor_i, neighbor_j = neighbors.pop(random_idx)
+            neighbor_cell = self._cells[neighbor_i][neighbor_j]
 
-        cell_to_move = move_options[random.randint(0,len(move_options)-1)]
+            if neighbor_cell.visited:
+                continue
 
-        # move horizontally
-        if i == cell_to_move[0]:
-            # move right
-            if j > cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_right_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_left_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-            # move left
-            if j < cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_left_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_right_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-        # move vertically
-        if j == cell_to_move[0]:
-            # move bottom
-            if i > cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_bottom_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_top_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
-            # move top
-            if i < cell_to_move[1]:
-                # we create a new current and next_move Cell with the
-                # corresponding white walls
-                current_cell.has_top_wall = False
-                next_move_cell = self._cells[cell_to_move[0]][cell_to_move[1]]
-                self._draw_cell(current_cell)
-                next_move_cell.has_bottom_wall = False
-                self._draw_cell(next_move_cell)
-                current_cell.draw_move(next_move_cell)
+            if neighbor_i < i:
+                cell.has_top_wall = False
+                neighbor_cell.has_bottom_wall = False
+            elif neighbor_i > i:
+                cell.has_bottom_wall = False
+                neighbor_cell.has_top_wall = False
+            elif neighbor_j < j:
+                cell.has_left_wall = False
+                neighbor_cell.has_right_wall = False
+            elif neighbor_j > j:
+                cell.has_right_wall = False
+                neighbor_cell.has_left_wall = False
 
-        if len(cell_to_move) == 0:
-            return
+            self._draw_cell(cell)
+            self._draw_cell(neighbor_cell)
 
+            self._break_walls_r(neighbor_i, neighbor_j)
 
+    def _get_unvisited_neighbors(self, i, j):
+        neighbors = []
 
+        if i > 0 and not self._cells[i - 1][j].visited:
+            neighbors.append((i - 1, j))
+
+        if i < self.num_rows - 1 and not self._cells[i + 1][j].visited:
+            neighbors.append((i + 1, j))
+
+        if j > 0 and not self._cells[i][j - 1].visited:
+            neighbors.append((i, j - 1))
+
+        if j < self.num_cols - 1 and not self._cells[i][j + 1].visited:
+            neighbors.append((i, j + 1))
+
+        return neighbors
