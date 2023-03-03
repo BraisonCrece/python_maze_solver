@@ -20,6 +20,8 @@ class Maze:
         if seed is not None:
             random.seed(seed)
 
+
+
     def _create_cells(self):
         for row in range(self.num_rows):
             cell_row = []
@@ -40,7 +42,7 @@ class Maze:
 
     def _animate(self):
         self.window.redraw()
-        time.sleep(0.002)
+        time.sleep(0.005)
 
     def _break_entrance_and_exit(self):
         first_cell = self._cells[0][0]
@@ -60,8 +62,10 @@ class Maze:
             random_idx = random.randint(0, len(neighbors) - 1)
             neighbor_i, neighbor_j = neighbors.pop(random_idx)
             neighbor_cell = self._cells[neighbor_i][neighbor_j]
+
             if neighbor_cell.visited:
                 continue
+
             if neighbor_i < i:
                 cell.has_top_wall = False
                 neighbor_cell.has_bottom_wall = False
@@ -99,7 +103,7 @@ class Maze:
                 cell.visited = False
 
     def solve(self):
-        self._solve_r(0,0)
+        return self._solve_r(0,0)
 
     def _solve_r(self, i, j):
         if(i == 0 and j == 0 ):
