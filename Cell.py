@@ -55,7 +55,7 @@ class Cell:
         if exists_move and not undo:
             self._window.draw_line(Line(self.center_point, to_cell.center_point), "red")
         elif exists_move and undo:
-            self._window.draw_line(Line(self.center_point, to_cell.center_point), "gray")
+            self._window.draw_line(Line(self.center_point, to_cell.center_point), "#b6b4c7")
         else:
             return
 
